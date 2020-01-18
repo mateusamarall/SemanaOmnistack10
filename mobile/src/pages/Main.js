@@ -14,7 +14,7 @@ import {
 	getCurrentPositionAsync
 } from 'expo-location';
 import api from '../services/api';
-
+import { connect, disconnect, subscribetoNewDevs } from '../services/socket';
 function Main({ navigation }) {
 	const [devs, setDevs] = useState([]);
 	const [currentRegion, setCurrentRegion] = useState(null);
@@ -39,6 +39,16 @@ function Main({ navigation }) {
 		}
 		loadinitialPosition();
 	}, []);
+
+	useEffect(() => {
+		subscribetoNewDevs((dev) => setDevs([...devs, dev]));
+	}, [devs]);
+
+	function setupWebSocket() {
+		disconnect();
+		const { latitude, longitude } = currentRegion;
+		connect(latitude, longitude, techs);
+	}
 	async function loadDevs() {
 		const { latitude, longitude } = currentRegion;
 		const response = await api.get('/search', {
@@ -48,7 +58,8 @@ function Main({ navigation }) {
 				techs
 			}
 		});
-		setDevs(response.data);
+		setDevs(response.data.devs);
+		setupWebSocket();
 	}
 	function handleRegionChanged(region) {
 		setCurrentRegion(region);
