@@ -6,7 +6,7 @@ Nessa aplicação Criamos radar de Devs. onde uma empresa ou um Dev consegue bus
 
 
 
-#:rocket:  Techs
+# :rocket:  Techs
 React-Native <br/>
 ReactJS <br/>
 NodeJS <br/>
